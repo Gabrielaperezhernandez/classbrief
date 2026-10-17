@@ -50,8 +50,9 @@ export default function PrivacyPage() {
           </li>
           <li>
             <strong>News sources</strong>: to find headlines, the text of your topic (never your email)
-            is sent as a search to the Guardian Open Platform. We also read public news feeds from the
-            European Commission, the Council of the EU and the WHO.
+            is sent as a search to the Guardian Open Platform. We also read public news feeds from
+            other newspapers (e.g. The Economist, the FT, the BBC), the European Commission, the
+            Council of the EU and the WHO; your topics are never sent to them.
           </li>
         </ul>
       </Section>

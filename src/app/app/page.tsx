@@ -37,9 +37,10 @@ export default async function AppPage() {
         aiEnabled={Boolean(process.env.ANTHROPIC_API_KEY)}
       />
       <p className="mt-8 text-xs text-slate-600">
-        Headlines and short snippets from The Guardian, the European Commission, the Council of the
-        EU and the World Health Organization. Each one links to the original article. Updated about
-        once an hour.
+        Headlines and short snippets from The Guardian, The Economist, the Financial Times, The Wall
+        Street Journal, The New York Times, Le Monde, Der Spiegel, BBC News, El País, the European
+        Commission, the Council of the EU and the WHO. Each one links to the original article;
+        &ldquo;Subscription&rdquo; means the newspaper has a paywall. Updated about once an hour.
       </p>
     </div>
   );

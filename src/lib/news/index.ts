@@ -2,7 +2,7 @@
 // Server-only: it uses GUARDIAN_API_KEY, which must never reach the browser.
 // We keep only headline, short snippet, date and link (never full articles).
 
-import { SOURCES, type Source } from "./sources";
+import { SOURCES, type AccessType, type Source } from "./sources";
 
 export type Article = {
   title: string;
@@ -10,10 +10,12 @@ export type Article = {
   snippet: string;
   publishedAt: string; // ISO date
   source: string; // source name, e.g. "The Guardian"
+  accessType: AccessType; // "subscription" = the article is behind a paywall
 };
 
 const CACHE_SECONDS = 60 * 60; // reuse results for 1 hour (fast pages, low API use)
-const MAX_ARTICLES = 5;
+const MAX_ARTICLES = 6;
+const MAX_PER_SOURCE = 2; // so one newspaper can't fill the whole list
 const SNIPPET_LENGTH = 200;
 const WINDOW_MS = 30 * 24 * 60 * 60 * 1000; // only news from the last 30 days
 
@@ -32,11 +34,19 @@ function cleanText(html: string, maxLength = SNIPPET_LENGTH): string {
     .replace(/&amp;/g, "&")
     .replace(/&quot;/g, '"')
     .replace(/&#39;|&apos;/g, "'")
+    // Numeric character codes, e.g. &#x2019; (’) or &#8217; (’).
+    .replace(/&#x([0-9a-f]+);/gi, (_, hex) => String.fromCodePoint(parseInt(hex, 16)))
+    .replace(/&#(\d+);/g, (_, dec) => String.fromCodePoint(Number(dec)))
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
     .replace(/\s+/g, " ")
     .trim();
   return text.length > maxLength ? text.slice(0, maxLength - 1).trimEnd() + "…" : text;
+}
+
+// Makes a word safe to use inside a regular expression.
+function escapeRegExp(text: string): string {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 // Splits a topic like "EU air quality rules" into useful words: ["eu", "air", "quality", "rules"].
@@ -88,6 +98,7 @@ async function guardianSearch(source: Source, words: string[], apiKey: string, p
       snippet: cleanText(r.fields?.trailText ?? ""),
       publishedAt: r.webPublicationDate,
       source: source.name,
+      accessType: source.access_type,
     }),
   );
 }
@@ -134,6 +145,7 @@ async function fromRss(source: Source, topic: string): Promise<Article[]> {
         snippet,
         publishedAt: isNaN(date.getTime()) ? "" : date.toISOString(),
         source: source.name,
+        accessType: source.access_type,
       };
     })
     .filter((a) => {
@@ -142,8 +154,9 @@ async function fromRss(source: Source, topic: string): Promise<Article[]> {
       if (!a.publishedAt || Date.now() - Date.parse(a.publishedAt) > WINDOW_MS) {
         return false;
       }
+      // Each topic word must start a word in the text: "iran" matches "Iranian" but not "Tirana".
       const text = `${a.title} ${a.snippet}`.toLowerCase();
-      return words.every((w) => text.includes(w));
+      return words.every((w) => new RegExp(`(^|[^\\p{L}\\p{N}])${escapeRegExp(w)}`, "u").test(text));
     });
 }
 
@@ -155,9 +168,21 @@ export async function getNewsForTopic(topic: string): Promise<Article[]> {
   );
 
   const seen = new Set<string>();
-  return results
+  const newestFirst = results
     .flatMap((r) => (r.status === "fulfilled" ? r.value : []))
     .filter((a) => !seen.has(a.url) && seen.add(a.url))
-    .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
-    .slice(0, MAX_ARTICLES);
+    .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+
+  // Mix of outlets: take at most MAX_PER_SOURCE per newspaper first,
+  // then fill any empty places with the next newest articles.
+  const perSource = new Map<string, number>();
+  const picked = newestFirst.filter((a) => {
+    const n = perSource.get(a.source) ?? 0;
+    perSource.set(a.source, n + 1);
+    return n < MAX_PER_SOURCE;
+  });
+  const rest = newestFirst.filter((a) => !picked.includes(a));
+  return [...picked, ...rest]
+    .slice(0, MAX_ARTICLES)
+    .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
 }

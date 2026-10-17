@@ -11,11 +11,28 @@ Each source has an `access_type` (`open | licensed | subscription`) in [`src/lib
 | Council of the EU | Press releases RSS feed | open | [Council legal notice](https://www.consilium.europa.eu/en/about-site/legal-notice/): reuse allowed with acknowledgement of the source |
 | World Health Organization | News RSS feed | open | [WHO terms of use](https://www.who.int/about/policies/publishing/copyright): headlines and links to WHO pages; no full-text republication |
 
+### Newspapers read through their public RSS feeds
+
+Publishers offer these feeds so others can show their headlines with a link back. We use them for a non-commercial student project, show only the headline, a short snippet, the date and the source name, and always link to the original. Paywalled newspapers get a **"Subscription"** label so students know before clicking. Each publisher's own RSS/terms page applies and should be re-checked before any commercial use.
+
+| Source | Feed | access_type |
+|---|---|---|
+| The Economist | `economist.com/europe/rss.xml`, `economist.com/international/rss.xml` | subscription |
+| Financial Times | `ft.com/rss/home/international` | subscription |
+| The Wall Street Journal | `feeds.content.dowjones.io/public/rss/RSSWorldNews` | subscription |
+| The New York Times | `rss.nytimes.com/services/xml/rss/nyt/World.xml` | subscription |
+| Le Monde (English) | `lemonde.fr/en/rss/une.xml` | subscription |
+| Der Spiegel International | `spiegel.de/international/index.rss` | open |
+| BBC News (World) | `feeds.bbci.co.uk/news/world/rss.xml` | open |
+| El País (English) | `feeds.elpais.com/.../english.elpais.com/portada` | open |
+
+Not available (no public feed, or the feed blocks requests): Reuters, AP, The Washington Post, Politico, The Telegraph. Showing full articles from paywalled newspapers (e.g. FT, The Economist) would need a licence (`access_type: licensed`).
+
 ## How matching works
 
 - **The Guardian:** its search API returns the newest articles for the topic text.
 - **RSS feeds:** we read the latest items and keep those whose headline or snippet contains **every** important word of the topic (common words like "the" or "new" are ignored).
-- Results from all sources are merged, duplicates removed, sorted newest first, and the top 5 are shown.
+- Results from all sources are merged and duplicates removed. We show up to 6 headlines, newest first, with at most 2 per newspaper so one outlet can't fill the list.
 
 ## Keys
 

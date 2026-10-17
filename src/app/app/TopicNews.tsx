@@ -104,6 +104,14 @@ export default function TopicNews({ topic, aiEnabled }: { topic: string; aiEnabl
                 {article.source}
                 {article.publishedAt &&
                   ` · ${new Date(article.publishedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}`}
+                {article.accessType === "subscription" && (
+                  <span
+                    className="ml-2 rounded border border-amber-300 bg-amber-50 px-1.5 py-0.5 text-[11px] font-medium text-amber-900"
+                    title="This newspaper needs a subscription to read the full article"
+                  >
+                    Subscription
+                  </span>
+                )}
               </p>
               {article.snippet && <p className="mt-1 text-sm text-slate-700">{article.snippet}</p>}
             </div>
