@@ -1,4 +1,6 @@
-// /app: the main feature, only for logged-in users.
+// /app: the main feature, only for logged-in users. Students land here right after
+// signing up and choose the topics they want news about (grading contract: core-input,
+// core-submit, core-item live here). Their news is on /news.
 // Loads this user's saved topics from Supabase (Row Level Security only returns their own rows).
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -22,26 +24,17 @@ export default async function AppPage() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
-      <h1 className="text-2xl font-bold text-slate-900">My topics</h1>
+      <h1 className="text-2xl font-bold text-slate-900">What topics are you interested in?</h1>
       <p className="mt-1 text-slate-700">
-        Add the topics your classes cover. You&apos;ll see the latest news for each one here.
+        Add the topics your classes cover. Your news page then shows what&apos;s happening in each
+        one, and how different newspapers cover it.
       </p>
       {error && (
         <p role="alert" className="mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-800">
           Could not load your topics. Please refresh the page.
         </p>
       )}
-      {/* The AI summary button only shows once an Anthropic key is configured on the server. */}
-      <TopicManager
-        initialTopics={(topics ?? []) as Topic[]}
-        aiEnabled={Boolean(process.env.ANTHROPIC_API_KEY)}
-      />
-      <p className="mt-8 text-xs text-slate-600">
-        Headlines and short snippets from The Guardian, The Economist, the Financial Times, The Wall
-        Street Journal, The New York Times, Le Monde, Der Spiegel, BBC News, El País, the European
-        Commission, the Council of the EU and the WHO. Each one links to the original article;
-        &ldquo;Subscription&rdquo; means the newspaper has a paywall. Updated about once an hour.
-      </p>
+      <TopicManager initialTopics={(topics ?? []) as Topic[]} />
     </div>
   );
 }

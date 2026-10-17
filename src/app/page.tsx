@@ -3,12 +3,12 @@ import Link from "next/link";
 
 const steps = [
   {
-    title: "Save your class topics",
-    text: "Type the topics your professors keep mentioning, like “EU air quality rules”.",
+    title: "Choose your topics",
+    text: "Type the topics your classes cover, like “EU climate policy” or “housing in Spain”.",
   },
   {
-    title: "See the latest news on each",
-    text: "Recent headlines from open news sources, grouped under each topic, with links to the originals.",
+    title: "Get your news page",
+    text: "Each story grouped across newspapers (FT, The Economist, BBC, Le Monde…), so you see how each one covers it.",
   },
   {
     title: "Arrive at class prepared",
@@ -27,8 +27,8 @@ export default function Home() {
           Know the news your professors will talk about
         </h1>
         <p className="mx-auto mt-4 max-w-xl text-lg text-slate-700">
-          Save the topics your classes cover and follow the latest news on each, in one place, instead
-          of checking ten news sites.
+          Pick the topics your classes cover and get one news page that shows each story across
+          newspapers like the FT, The Economist and the BBC, instead of checking ten sites.
         </p>
         <Link
           href="/signup"

@@ -64,12 +64,6 @@ export default function PrivacyPage() {
         </p>
       </Section>
 
-      <Section title="AI-generated content">
-        <p>
-          Any summary written by AI is clearly labelled as AI-generated. Headlines and snippets always
-          link to the original articles.
-        </p>
-      </Section>
 
       <Section title="How long we keep it">
         <p>

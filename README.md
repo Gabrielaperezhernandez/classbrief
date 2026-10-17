@@ -2,7 +2,7 @@
 
 ClassBrief helps IE students in policy, business and law courses follow the news their classes depend on, so they arrive prepared.
 
-Students save the topics their professors keep mentioning (for example "EU air quality rules") and see the latest news on each one in a single place.
+Students choose the topics their classes cover (for example "EU climate policy"). Their **My news** page then shows what's happening in each topic, with every story grouped across newspapers (The Guardian, The Economist, FT, WSJ, NYT, Le Monde, Der Spiegel, BBC, El País, plus EU and WHO sources), so they can see how each outlet covers it. Only headlines, short snippets and links are shown; see [SOURCES.md](SOURCES.md).
 
 ## Tech
 

@@ -17,6 +17,9 @@ export default async function Header() {
         </Link>
         {user ? (
           <div className="flex items-center gap-3">
+            <Link href="/news" className="text-sm font-medium text-slate-700 hover:underline">
+              My news
+            </Link>
             <Link href="/app" className="text-sm font-medium text-slate-700 hover:underline">
               My topics
             </Link>

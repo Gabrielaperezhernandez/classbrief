@@ -1,6 +1,6 @@
 // Runs before every page request:
 // 1. keeps the Supabase login session fresh (refreshes its cookies), and
-// 2. sends logged-out visitors away from /app, and logged-in users away from /login and /signup.
+// 2. sends logged-out visitors away from /app and /news, and logged-in users away from /login and /signup.
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
@@ -33,7 +33,7 @@ export async function proxy(request: NextRequest) {
 
   const path = request.nextUrl.pathname;
 
-  if (!user && path.startsWith("/app")) {
+  if (!user && (path.startsWith("/app") || path.startsWith("/news"))) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
   if (user && (path === "/login" || path === "/signup")) {

@@ -4,7 +4,7 @@
 // data-testid names (core-input, core-submit, core-item) come from the grading contract.
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import TopicNews from "./TopicNews";
+import Link from "next/link";
 
 export type Topic = {
   id: string;
@@ -12,13 +12,10 @@ export type Topic = {
   created_at: string;
 };
 
-export default function TopicManager({
-  initialTopics,
-  aiEnabled,
-}: {
-  initialTopics: Topic[];
-  aiEnabled: boolean;
-}) {
+// Example topics a student can click to fill in the box (they still click "Add topic").
+const EXAMPLES = ["EU climate policy", "Housing in Spain", "AI regulation", "Interest rates"];
+
+export default function TopicManager({ initialTopics }: { initialTopics: Topic[] }) {
   const [topics, setTopics] = useState<Topic[]>(initialTopics);
   const [title, setTitle] = useState("");
   const [error, setError] = useState("");
@@ -88,6 +85,29 @@ export default function TopicManager({
         </p>
       )}
 
+      <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
+        <span className="text-slate-600">Ideas:</span>
+        {EXAMPLES.map((example) => (
+          <button
+            key={example}
+            type="button"
+            onClick={() => setTitle(example)}
+            className="rounded-full border border-slate-300 bg-white px-3 py-1 text-slate-700 hover:bg-slate-100"
+          >
+            {example}
+          </button>
+        ))}
+      </div>
+
+      {topics.length > 0 && (
+        <Link
+          href="/news"
+          className="mt-6 flex items-center justify-center rounded-lg bg-slate-900 px-5 py-3 font-semibold text-white hover:bg-slate-800"
+        >
+          See my news →
+        </Link>
+      )}
+
       {topics.length === 0 ? (
         <p className="mt-8 rounded-lg border border-dashed border-slate-300 p-6 text-center text-slate-600">
           No topics yet. Add your first one above.
@@ -115,7 +135,6 @@ export default function TopicManager({
                   Delete
                 </button>
               </div>
-              <TopicNews topic={topic.title} aiEnabled={aiEnabled} />
             </li>
           ))}
         </ul>

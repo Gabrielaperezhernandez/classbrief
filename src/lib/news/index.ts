@@ -14,8 +14,6 @@ export type Article = {
 };
 
 const CACHE_SECONDS = 60 * 60; // reuse results for 1 hour (fast pages, low API use)
-const MAX_ARTICLES = 6;
-const MAX_PER_SOURCE = 2; // so one newspaper can't fill the whole list
 const SNIPPET_LENGTH = 200;
 const WINDOW_MS = 30 * 24 * 60 * 60 * 1000; // only news from the last 30 days
 
@@ -49,6 +47,11 @@ function escapeRegExp(text: string): string {
   return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+// True if `word` starts a word in `text`: "iran" is found in "Iranian", not in "Tirana".
+function startsWord(word: string, text: string): boolean {
+  return new RegExp(`(^|[^\\p{L}\\p{N}])${escapeRegExp(word)}`, "u").test(text.toLowerCase());
+}
+
 // Splits a topic like "EU air quality rules" into useful words: ["eu", "air", "quality", "rules"].
 function keywords(topic: string): string[] {
   return topic
@@ -69,13 +72,19 @@ function cachedFetch(url: string, headers?: Record<string, string>) {
 
 // One Guardian search. `precise` = only headline + summary, newest first;
 // otherwise the whole article text, most relevant first.
-async function guardianSearch(source: Source, words: string[], apiKey: string, precise: boolean) {
+async function guardianSearch(
+  source: Source,
+  words: string[],
+  apiKey: string,
+  precise: boolean,
+  pageSize: number,
+): Promise<Article[]> {
   const fromDate = new Date(Date.now() - WINDOW_MS).toISOString().slice(0, 10);
   const params = new URLSearchParams({
     q: words.join(" AND "), // every word must appear
     "from-date": fromDate, // last 30 days only
     "order-by": precise ? "newest" : "relevance",
-    "page-size": String(MAX_ARTICLES),
+    "page-size": String(pageSize),
     "show-fields": "trailText",
     "api-key": apiKey,
   });
@@ -104,14 +113,18 @@ async function guardianSearch(source: Source, words: string[], apiKey: string, p
 }
 
 // Guardian: precise search first; if it finds fewer than 3, add the closest wider matches.
-async function fromGuardian(source: Source, topic: string): Promise<Article[]> {
+async function fromGuardian(source: Source, topic: string, pageSize: number): Promise<Article[]> {
   const apiKey = process.env.GUARDIAN_API_KEY;
   const words = keywords(topic);
   if (!apiKey || words.length === 0) return [];
 
-  const precise = await guardianSearch(source, words, apiKey, true);
+  const precise = await guardianSearch(source, words, apiKey, true, pageSize);
   if (precise.length >= 3) return precise;
-  const wider = await guardianSearch(source, words, apiKey, false);
+  // Wider search (whole article text) brings loosely related items: keep only those whose
+  // headline or summary mentions at least one topic word.
+  const wider = (await guardianSearch(source, words, apiKey, false, pageSize)).filter((a) =>
+    words.some((w) => startsWord(w, `${a.title} ${a.snippet}`)),
+  );
   return [...precise, ...wider];
 }
 
@@ -155,34 +168,23 @@ async function fromRss(source: Source, topic: string): Promise<Article[]> {
         return false;
       }
       // Each topic word must start a word in the text: "iran" matches "Iranian" but not "Tirana".
-      const text = `${a.title} ${a.snippet}`.toLowerCase();
-      return words.every((w) => new RegExp(`(^|[^\\p{L}\\p{N}])${escapeRegExp(w)}`, "u").test(text));
+      return words.every((w) => startsWord(w, `${a.title} ${a.snippet}`));
     });
 }
 
-// Main function: news for one topic, newest first, from all sources.
+// Every matching article for one topic from all sources, without duplicates, newest first.
 // A source that fails or is slow is skipped, so the page never breaks.
-export async function getNewsForTopic(topic: string): Promise<Article[]> {
+// `guardianPageSize` = how many Guardian results to ask for.
+export async function collectArticles(topic: string, guardianPageSize = 10): Promise<Article[]> {
   const results = await Promise.allSettled(
-    SOURCES.map((s) => (s.kind === "guardian" ? fromGuardian(s, topic) : fromRss(s, topic))),
+    SOURCES.map((s) =>
+      s.kind === "guardian" ? fromGuardian(s, topic, guardianPageSize) : fromRss(s, topic),
+    ),
   );
 
   const seen = new Set<string>();
-  const newestFirst = results
+  return results
     .flatMap((r) => (r.status === "fulfilled" ? r.value : []))
     .filter((a) => !seen.has(a.url) && seen.add(a.url))
-    .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
-
-  // Mix of outlets: take at most MAX_PER_SOURCE per newspaper first,
-  // then fill any empty places with the next newest articles.
-  const perSource = new Map<string, number>();
-  const picked = newestFirst.filter((a) => {
-    const n = perSource.get(a.source) ?? 0;
-    perSource.set(a.source, n + 1);
-    return n < MAX_PER_SOURCE;
-  });
-  const rest = newestFirst.filter((a) => !picked.includes(a));
-  return [...picked, ...rest]
-    .slice(0, MAX_ARTICLES)
     .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
 }

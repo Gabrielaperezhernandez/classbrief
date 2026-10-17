@@ -50,7 +50,8 @@ Professors often refer to recent news in class (e.g. air-quality regulation in a
 ## The product (scope for the deadline)
 
 - **Who it's for:** IE students in policy, business and law courses where professors expect them to follow the news.
-- **Main feature (the contract's core item):** "Follow a topic". The student types a topic their class depends on (e.g. "EU air quality rules") and saves it. Each saved topic shows matching recent headlines from open sources, with links. Later: a short AI-generated summary per topic.
+- **Main feature (the contract's core item):** on `/app` ("What topics are you interested in?", where students land right after sign-up) the student types a topic their class covers and saves it.
+- **My news (`/news`):** for each topic, recent stories grouped across newspapers (no AI: grouped by shared distinctive words in headline + snippet), showing "Covered by N newspapers" and each outlet's headline, snippet and link, with a "Subscription" label for paywalled papers. Code: `src/lib/news/` (`index.ts` fetches, `stories.ts` groups, `sources.ts` lists the 13 sources).
 - **Data: private.** Each user only sees their own topics.
 - **Later, only if the core is solid:** professor course feeds with join codes, story grouping across outlets, chatbot per story, paid publisher sources.
 
@@ -81,7 +82,7 @@ Professors often refer to recent news in class (e.g. air-quality regulation in a
 
 1. **Day 1 (17 Oct):** contract pages (`/`, `/signup`, `/login`, `/app`), `topics` table with RLS, public GitHub repo, Vercel deploy, Step 7 checklist on the live link.
 2. **Day 2:** news ingestion (Guardian API + RSS), headlines under each topic, `SOURCES.md`.
-3. **Day 3:** AI summary per topic (server-side, rate-limited, labelled). **Built but switched off (17 Oct):** IE blocks Anthropic accounts on student.ie.edu and I chose not to pay with a personal account. The "Summarise with AI" button stays hidden until `ANTHROPIC_API_KEY` is set (locally and in Vercel); nothing else is needed to turn it on.
+3. **Day 3:** AI summary per topic (server-side, rate-limited, labelled). **Dropped (17 Oct):** IE blocks Anthropic accounts on student.ie.edu and I chose not to pay with a personal account; the news page compares coverage without AI instead. The earlier AI summary code (route, prompt, rate limit) is in Git history at commit `d336497`; the `ai_usage` table still exists in Supabase, unused.
 4. **Day 4:** landing page polish, phone layout, privacy page, accessibility; real users (Step 8) and fixes.
 5. **Day 5:** final checks on the live link, security review, Step 9 summary.
 

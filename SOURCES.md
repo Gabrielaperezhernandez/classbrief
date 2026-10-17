@@ -32,7 +32,8 @@ Not available (no public feed, or the feed blocks requests): Reuters, AP, The Wa
 
 - **The Guardian:** its search API returns the newest articles for the topic text.
 - **RSS feeds:** we read the latest items and keep those whose headline or snippet contains **every** important word of the topic (common words like "the" or "new" are ignored).
-- Results from all sources are merged and duplicates removed. We show up to 6 headlines, newest first, with at most 2 per newspaper so one outlet can't fill the list.
+- Results from all sources are merged and duplicates removed.
+- **Stories (My news page):** articles about the same story are grouped automatically, without AI: two articles join when their headline + snippet share at least 3 distinctive words (names, places, key terms; singular and plural count as the same) covering at least 30% of the shorter one. Each story keeps one article per newspaper and shows "Covered by N newspapers". Stories covered by more newspapers come first; up to 6 per topic.
 
 ## Keys
 
