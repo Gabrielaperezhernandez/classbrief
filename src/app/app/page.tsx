@@ -32,6 +32,11 @@ export default async function AppPage() {
         </p>
       )}
       <TopicManager initialTopics={(topics ?? []) as Topic[]} />
+      <p className="mt-8 text-xs text-slate-600">
+        Headlines and short snippets from The Guardian, the European Commission, the Council of the
+        EU and the World Health Organization. Each one links to the original article. Updated about
+        once an hour.
+      </p>
     </div>
   );
 }

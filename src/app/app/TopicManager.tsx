@@ -4,6 +4,7 @@
 // data-testid names (core-input, core-submit, core-item) come from the grading contract.
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import TopicNews from "./TopicNews";
 
 export type Topic = {
   id: string;
@@ -88,25 +89,27 @@ export default function TopicManager({ initialTopics }: { initialTopics: Topic[]
       ) : (
         <ul className="mt-6 space-y-3">
           {topics.map((topic) => (
-            <li
-              key={topic.id}
-              data-testid="core-item"
-              className="flex items-start justify-between gap-3 rounded-lg border border-slate-200 bg-white p-4"
-            >
-              <div className="min-w-0">
-                <p className="break-words font-medium text-slate-900">{topic.title}</p>
-                <p className="mt-1 text-xs text-slate-600">
-                  Added {new Date(topic.created_at).toLocaleDateString("en-GB")}
-                </p>
+            <li key={topic.id} className="rounded-lg border border-slate-200 bg-white p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  {/* core-item holds exactly the saved text (grading contract). */}
+                  <h2 data-testid="core-item" className="break-words font-semibold text-slate-900">
+                    {topic.title}
+                  </h2>
+                  <p className="mt-1 text-xs text-slate-600">
+                    Added {new Date(topic.created_at).toLocaleDateString("en-GB")}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => deleteTopic(topic.id)}
+                  aria-label={`Delete topic ${topic.title}`}
+                  className="shrink-0 rounded-md px-2 py-1 text-sm text-slate-600 hover:bg-slate-100 hover:text-red-800"
+                >
+                  Delete
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() => deleteTopic(topic.id)}
-                aria-label={`Delete topic ${topic.title}`}
-                className="shrink-0 rounded-md px-2 py-1 text-sm text-slate-600 hover:bg-slate-100 hover:text-red-800"
-              >
-                Delete
-              </button>
+              <TopicNews topic={topic.title} />
             </li>
           ))}
         </ul>
