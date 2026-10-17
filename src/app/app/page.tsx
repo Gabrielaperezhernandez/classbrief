@@ -31,7 +31,11 @@ export default async function AppPage() {
           Could not load your topics. Please refresh the page.
         </p>
       )}
-      <TopicManager initialTopics={(topics ?? []) as Topic[]} />
+      {/* The AI summary button only shows once an Anthropic key is configured on the server. */}
+      <TopicManager
+        initialTopics={(topics ?? []) as Topic[]}
+        aiEnabled={Boolean(process.env.ANTHROPIC_API_KEY)}
+      />
       <p className="mt-8 text-xs text-slate-600">
         Headlines and short snippets from The Guardian, the European Commission, the Council of the
         EU and the World Health Organization. Each one links to the original article. Updated about

@@ -13,7 +13,7 @@ type SummaryState =
   | { status: "done"; summary: Summary }
   | { status: "error"; message: string };
 
-export default function TopicNews({ topic }: { topic: string }) {
+export default function TopicNews({ topic, aiEnabled }: { topic: string; aiEnabled: boolean }) {
   const [state, setState] = useState<State>({ status: "loading" });
   const [summary, setSummary] = useState<SummaryState>({ status: "idle" });
 
@@ -65,7 +65,7 @@ export default function TopicNews({ topic }: { topic: string }) {
 
   return (
     <div className="mt-3 border-t border-slate-100 pt-3">
-      {summary.status === "idle" && (
+      {aiEnabled && summary.status === "idle" && (
         <button
           type="button"
           onClick={summarise}

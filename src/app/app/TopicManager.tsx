@@ -12,7 +12,13 @@ export type Topic = {
   created_at: string;
 };
 
-export default function TopicManager({ initialTopics }: { initialTopics: Topic[] }) {
+export default function TopicManager({
+  initialTopics,
+  aiEnabled,
+}: {
+  initialTopics: Topic[];
+  aiEnabled: boolean;
+}) {
   const [topics, setTopics] = useState<Topic[]>(initialTopics);
   const [title, setTitle] = useState("");
   const [error, setError] = useState("");
@@ -109,7 +115,7 @@ export default function TopicManager({ initialTopics }: { initialTopics: Topic[]
                   Delete
                 </button>
               </div>
-              <TopicNews topic={topic.title} />
+              <TopicNews topic={topic.title} aiEnabled={aiEnabled} />
             </li>
           ))}
         </ul>
