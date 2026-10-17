@@ -81,7 +81,7 @@ Professors often refer to recent news in class (e.g. air-quality regulation in a
 
 1. **Day 1 (17 Oct):** contract pages (`/`, `/signup`, `/login`, `/app`), `topics` table with RLS, public GitHub repo, Vercel deploy, Step 7 checklist on the live link.
 2. **Day 2:** news ingestion (Guardian API + RSS), headlines under each topic, `SOURCES.md`.
-3. **Day 3:** AI summary per topic (server-side, rate-limited, labelled).
+3. **Day 3:** AI summary per topic (server-side, rate-limited, labelled). **Built but switched off (17 Oct):** IE blocks Anthropic accounts on student.ie.edu and I chose not to pay with a personal account. The "Summarise with AI" button stays hidden until `ANTHROPIC_API_KEY` is set (locally and in Vercel); nothing else is needed to turn it on.
 4. **Day 4:** landing page polish, phone layout, privacy page, accessibility; real users (Step 8) and fixes.
 5. **Day 5:** final checks on the live link, security review, Step 9 summary.
 
