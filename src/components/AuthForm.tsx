@@ -102,6 +102,15 @@ export default function AuthForm({ mode }: { mode: Mode }) {
           </p>
         )}
 
+        {isSignup && (
+          <p className="text-xs text-slate-600">
+            We only store your email and the topics you save.{" "}
+            <Link href="/privacy" className="font-medium text-blue-800 underline">
+              Privacy
+            </Link>
+          </p>
+        )}
+
         <button
           type="submit"
           data-testid={`${mode}-submit`}
