@@ -70,6 +70,13 @@ Professors often refer to recent news in class (e.g. air-quality regulation in a
 - Claude API (Anthropic) for summaries, server-side only
 - Vercel for hosting (free plan: one daily cron, plus a protected manual refresh route)
 
+## Links
+
+- Live app: https://classbrief-one.vercel.app (Vercel project `classbrief`, auto-deploys on every push to `main`)
+- Repo (public): https://github.com/Gabrielaperezhernandez/classbrief
+- Supabase project ref: `kbcnsnmhyeijgkskpzya` (eu-west-2). Site URL and redirect URLs point at the live app and localhost:3000.
+- Push with the GitHub CLI at `~/bin/gh` (already signed in).
+
 ## Plan
 
 1. **Day 1 (17 Oct):** contract pages (`/`, `/signup`, `/login`, `/app`), `topics` table with RLS, public GitHub repo, Vercel deploy, Step 7 checklist on the live link.
