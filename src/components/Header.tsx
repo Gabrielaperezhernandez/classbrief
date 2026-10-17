@@ -2,6 +2,10 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import LogoutButton from "./LogoutButton";
+import Logo from "./Logo";
+
+const navLink =
+  "rounded-md px-2 py-1.5 text-sm font-medium text-muted hover:bg-brand-soft hover:text-brand";
 
 export default async function Header() {
   const supabase = await createClient();
@@ -10,29 +14,30 @@ export default async function Header() {
   } = await supabase.auth.getUser();
 
   return (
-    <header className="border-b border-slate-200 bg-white">
-      <nav className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-3">
-        <Link href={user ? "/app" : "/"} className="text-lg font-bold text-slate-900">
-          ClassBrief
+    <header className="sticky top-0 z-10 border-b border-line bg-card/95 backdrop-blur">
+      <nav className="mx-auto flex max-w-5xl items-center justify-between gap-2 px-4 py-3">
+        <Link href={user ? "/news" : "/"} aria-label="ClassBrief home">
+          {/* On small phones, logged-in users see only the logo mark so the menu fits. */}
+          <Logo compact={Boolean(user)} />
         </Link>
         {user ? (
-          <div className="flex items-center gap-3">
-            <Link href="/news" className="text-sm font-medium text-slate-700 hover:underline">
+          <div className="flex items-center gap-1 sm:gap-2">
+            <Link href="/news" className={navLink}>
               My news
             </Link>
-            <Link href="/app" className="text-sm font-medium text-slate-700 hover:underline">
+            <Link href="/app" className={navLink}>
               My topics
             </Link>
             <LogoutButton />
           </div>
         ) : (
-          <div className="flex items-center gap-3">
-            <Link href="/login" className="text-sm font-medium text-slate-700 hover:underline">
+          <div className="flex items-center gap-2">
+            <Link href="/login" className={navLink}>
               Log in
             </Link>
             <Link
               href="/signup"
-              className="rounded-md bg-blue-700 px-3 py-1.5 text-sm font-semibold text-white hover:bg-blue-800"
+              className="rounded-md bg-brand px-3.5 py-1.5 text-sm font-semibold text-white hover:bg-brand-dark"
             >
               Sign up
             </Link>

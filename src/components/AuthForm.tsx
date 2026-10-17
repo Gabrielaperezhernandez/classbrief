@@ -52,19 +52,20 @@ export default function AuthForm({ mode }: { mode: Mode }) {
   }
 
   return (
-    <div className="mx-auto max-w-sm px-4 py-12">
-      <h1 className="text-2xl font-bold text-slate-900">
+    <div className="mx-auto max-w-md px-4 py-12 sm:py-16">
+      <div className="rounded-2xl border border-line bg-card p-6 shadow-sm sm:p-8">
+      <h1 className="font-serif text-3xl font-semibold tracking-tight text-ink">
         {isSignup ? "Create your account" : "Log in"}
       </h1>
-      <p className="mt-2 text-slate-700">
+      <p className="mt-2 text-muted">
         {isSignup
-          ? "Start following the news your classes depend on."
-          : "Welcome back. See your topics."}
+          ? "Follow the news your classes depend on, in one page."
+          : "Welcome back. Your news is waiting."}
       </p>
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-slate-800">
+          <label htmlFor="email" className="block text-sm font-medium text-ink">
             Email
           </label>
           <input
@@ -75,11 +76,11 @@ export default function AuthForm({ mode }: { mode: Mode }) {
             data-testid={`${mode}-email`}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="mt-1 w-full rounded-md border border-slate-400 bg-white px-3 py-2 text-slate-900"
+            className="mt-1 w-full rounded-md border border-[#8c8f96] bg-card px-3 py-2 text-ink"
           />
         </div>
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-slate-800">
+          <label htmlFor="password" className="block text-sm font-medium text-ink">
             Password
           </label>
           <input
@@ -91,9 +92,9 @@ export default function AuthForm({ mode }: { mode: Mode }) {
             data-testid={`${mode}-password`}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="mt-1 w-full rounded-md border border-slate-400 bg-white px-3 py-2 text-slate-900"
+            className="mt-1 w-full rounded-md border border-[#8c8f96] bg-card px-3 py-2 text-ink"
           />
-          {isSignup && <p className="mt-1 text-xs text-slate-600">At least 6 characters.</p>}
+          {isSignup && <p className="mt-1 text-xs text-muted">At least 6 characters.</p>}
         </div>
 
         {error && (
@@ -103,9 +104,9 @@ export default function AuthForm({ mode }: { mode: Mode }) {
         )}
 
         {isSignup && (
-          <p className="text-xs text-slate-600">
+          <p className="text-xs text-muted">
             We only store your email and the topics you save.{" "}
-            <Link href="/privacy" className="font-medium text-blue-800 underline">
+            <Link href="/privacy" className="font-medium text-brand underline">
               Privacy
             </Link>
           </p>
@@ -115,18 +116,19 @@ export default function AuthForm({ mode }: { mode: Mode }) {
           type="submit"
           data-testid={`${mode}-submit`}
           disabled={loading}
-          className="w-full rounded-md bg-blue-700 px-4 py-2.5 font-semibold text-white hover:bg-blue-800 disabled:opacity-60"
+          className="w-full rounded-lg bg-brand px-4 py-3 font-semibold text-white hover:bg-brand-dark disabled:opacity-60"
         >
           {loading ? "Please wait…" : isSignup ? "Sign up" : "Log in"}
         </button>
       </form>
 
-      <p className="mt-6 text-sm text-slate-700">
+      <p className="mt-6 text-sm text-muted">
         {isSignup ? "Already have an account? " : "New here? "}
-        <Link href={isSignup ? "/login" : "/signup"} className="font-medium text-blue-800 underline">
+        <Link href={isSignup ? "/login" : "/signup"} className="font-medium text-brand underline">
           {isSignup ? "Log in" : "Create an account"}
         </Link>
       </p>
+      </div>
     </div>
   );
 }

@@ -1,18 +1,29 @@
 @import "tailwindcss";
 
+/* Design tokens: an editorial "newspaper" look. All text colours pass WCAG AA contrast. */
 @theme inline {
   --font-sans: var(--font-geist-sans);
+  --font-serif: var(--font-newsreader), Georgia, "Times New Roman", serif;
+
+  --color-paper: #f7f5f0; /* page background, warm off-white */
+  --color-card: #ffffff;
+  --color-ink: #16181d; /* main text */
+  --color-muted: #545a66; /* secondary text (7:1 on paper) */
+  --color-line: #e4e0d6; /* borders */
+  --color-brand: #1b3358; /* deep navy: buttons, links */
+  --color-brand-dark: #12233d;
+  --color-brand-soft: #e8edf5;
+  --color-accent: #9c2b1f; /* brick red: small highlights */
 }
 
-/* Light theme only for now, with high-contrast text (accessibility). */
 body {
-  background: #f8fafc;
-  color: #0f172a;
+  background: var(--color-paper);
+  color: var(--color-ink);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
 /* Visible focus outline for keyboard users. */
 :focus-visible {
-  outline: 3px solid #1d4ed8;
+  outline: 3px solid var(--color-brand);
   outline-offset: 2px;
 }

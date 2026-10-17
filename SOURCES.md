@@ -15,25 +15,31 @@ Each source has an `access_type` (`open | licensed | subscription`) in [`src/lib
 
 Publishers offer these feeds so others can show their headlines with a link back. We use them for a non-commercial student project, show only the headline, a short snippet, the date and the source name, and always link to the original. Paywalled newspapers get a **"Subscription"** label so students know before clicking. Each publisher's own RSS/terms page applies and should be re-checked before any commercial use.
 
-| Source | Feed | access_type |
+We read several **section feeds** per newspaper (world, Europe, business, economy, climate, technology, politics, health…), so we search far more recent articles than a front page alone. The exact feed URLs are in [`src/lib/news/sources.ts`](src/lib/news/sources.ts).
+
+| Source | Sections read | access_type |
 |---|---|---|
-| The Economist | `economist.com/europe/rss.xml`, `economist.com/international/rss.xml` | subscription |
-| Financial Times | `ft.com/rss/home/international` | subscription |
-| The Wall Street Journal | `feeds.content.dowjones.io/public/rss/RSSWorldNews` | subscription |
-| The New York Times | `rss.nytimes.com/services/xml/rss/nyt/World.xml` | subscription |
-| Le Monde (English) | `lemonde.fr/en/rss/une.xml` | subscription |
-| Der Spiegel International | `spiegel.de/international/index.rss` | open |
-| BBC News (World) | `feeds.bbci.co.uk/news/world/rss.xml` | open |
-| El País (English) | `feeds.elpais.com/.../english.elpais.com/portada` | open |
+| The Economist | Europe, International, Finance & economics, Business, Science & technology, Leaders, Britain, United States, Middle East & Africa, Asia, China, The Americas | subscription |
+| Financial Times | International home, World, Europe, Global economy, Companies, Technology, Climate | subscription |
+| The Wall Street Journal | World, US business, Markets, Tech, Economy | subscription |
+| The New York Times | World, Europe, Business, Economy, Climate, Technology, Politics, Health | subscription |
+| Le Monde (English) | Front page, International, Europe, Economy, Environment | subscription |
+| Der Spiegel International | All | open |
+| BBC News | World, Europe, Business, Politics, Science & environment, Technology, Health | open |
+| El País (English) | Front page, International, Spain, Economy & business, Climate, Technology | open |
 
 Not available (no public feed, or the feed blocks requests): Reuters, AP, The Washington Post, Politico, The Telegraph. Showing full articles from paywalled newspapers (e.g. FT, The Economist) would need a licence (`access_type: licensed`).
 
 ## How matching works
 
-- **The Guardian:** its search API returns the newest articles for the topic text.
-- **RSS feeds:** we read the latest items and keep those whose headline or snippet contains **every** important word of the topic (common words like "the" or "new" are ignored).
-- Results from all sources are merged and duplicates removed.
+We never download newspaper web pages. We search only what each source gives us:
+
+- **The Guardian:** its search engine (Content API) searches whole articles: first headline + summary, then the full text (those results must mention at least half of the topic words in their headline or summary).
+- **RSS feeds:** we search the headline, the summary, the newspaper's own topic tags and, where a feed includes it (e.g. El País, the NYT), the article text. This extra text is used **only for matching and is never shown or stored** by us.
+- **Relevance score:** each article gets points for every topic word it contains. Rare, specific words (e.g. "quality", "Houthi") count more than common ones (e.g. "EU", "rules"), and a word in the headline counts more than one in the tags, summary or body. An article must contain at least 70% of the topic's weighted words, with at least one in the headline, tags or summary.
+- **Word matching:** words match at the start of a word ("Iran" finds "Iranian" but not "Tirana"; "tariff" finds "tariffs"). Short words like "AI" or "EU" must be whole words, and common variants count ("A.I.", "artificial intelligence", "European Union").
 - **Stories (My news page):** articles about the same story are grouped automatically, without AI: two articles join when their headline + snippet share at least 3 distinctive words (names, places, key terms; singular and plural count as the same) covering at least 30% of the shorter one. Each story keeps one article per newspaper and shows "Covered by N newspapers". Stories covered by more newspapers come first; up to 6 per topic.
+- Only news from the last 30 days is used.
 
 ## Keys
 

@@ -51,7 +51,7 @@ Professors often refer to recent news in class (e.g. air-quality regulation in a
 
 - **Who it's for:** IE students in policy, business and law courses where professors expect them to follow the news.
 - **Main feature (the contract's core item):** on `/app` ("What topics are you interested in?", where students land right after sign-up) the student types a topic their class covers and saves it.
-- **My news (`/news`):** for each topic, recent stories grouped across newspapers (no AI: grouped by shared distinctive words in headline + snippet), showing "Covered by N newspapers" and each outlet's headline, snippet and link, with a "Subscription" label for paywalled papers. Code: `src/lib/news/` (`index.ts` fetches, `stories.ts` groups, `sources.ts` lists the 13 sources).
+- **My news (`/news`):** for each topic, recent stories grouped across newspapers (no AI: relevance-scored search over each paper's section feeds + Guardian full-text search, then grouped by shared distinctive words; details in SOURCES.md), showing "Covered by N newspapers" and each outlet's headline, snippet and link, with a "Subscription" label for paywalled papers. Code: `src/lib/news/` (`index.ts` fetches, `stories.ts` groups, `sources.ts` lists the 13 sources).
 - **Data: private.** Each user only sees their own topics.
 - **Later, only if the core is solid:** professor course feeds with join codes, story grouping across outlets, chatbot per story, paid publisher sources.
 
@@ -66,7 +66,7 @@ Professors often refer to recent news in class (e.g. air-quality regulation in a
 
 ## Stack
 
-- Next.js (App Router) + TypeScript + Tailwind
+- Next.js (App Router) + TypeScript + Tailwind. Design: editorial style, Newsreader serif for headlines, colour tokens in `src/app/globals.css` (ink, paper, brand navy, accent red).
 - Supabase (Postgres, Auth, Row Level Security), EU region
 - Claude API (Anthropic) for summaries, server-side only
 - Vercel for hosting (free plan: one daily cron, plus a protected manual refresh route)

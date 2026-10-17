@@ -24,8 +24,8 @@ export default async function AppPage() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-8">
-      <h1 className="text-2xl font-bold text-slate-900">What topics are you interested in?</h1>
-      <p className="mt-1 text-slate-700">
+      <h1 className="font-serif text-3xl font-semibold tracking-tight text-ink">What topics are you interested in?</h1>
+      <p className="mt-1 text-muted">
         Add the topics your classes cover. Your news page then shows what&apos;s happening in each
         one, and how different newspapers cover it.
       </p>

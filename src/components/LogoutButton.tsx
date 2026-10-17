@@ -19,7 +19,7 @@ export default function LogoutButton() {
       type="button"
       data-testid="logout"
       onClick={handleLogout}
-      className="rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-800 hover:bg-slate-100"
+      className="rounded-md border border-line bg-card px-3 py-1.5 text-sm font-medium text-ink hover:bg-paper"
     >
       Log out
     </button>

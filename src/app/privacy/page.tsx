@@ -7,9 +7,9 @@ const REPO_URL = "https://github.com/Gabrielaperezhernandez/classbrief";
 
 export default function PrivacyPage() {
   return (
-    <div className="mx-auto max-w-2xl px-4 py-10 text-slate-800">
-      <h1 className="text-2xl font-bold text-slate-900">Privacy</h1>
-      <p className="mt-2 text-sm text-slate-600">Last updated: 17 October 2026</p>
+    <div className="mx-auto max-w-2xl px-4 py-10 text-ink">
+      <h1 className="font-serif text-3xl font-semibold tracking-tight text-ink">Privacy</h1>
+      <p className="mt-2 text-sm text-muted">Last updated: 17 October 2026</p>
 
       <p className="mt-6">
         ClassBrief is an independent student project built for an EdTech course at IE University. It
@@ -77,7 +77,7 @@ export default function PrivacyPage() {
         <p>
           Under the GDPR you can ask to see, correct or delete your data, or to delete your account.
           To do so, open a request on our{" "}
-          <a href={`${REPO_URL}/issues`} className="font-medium text-blue-800 underline" target="_blank" rel="noopener noreferrer">
+          <a href={`${REPO_URL}/issues`} className="font-medium text-brand underline" target="_blank" rel="noopener noreferrer">
             project page on GitHub
           </a>{" "}
           (don&apos;t post your email publicly; just say you want to be contacted) and we will reply
@@ -86,7 +86,7 @@ export default function PrivacyPage() {
       </Section>
 
       <p className="mt-10">
-        <Link href="/" className="font-medium text-blue-800 underline">
+        <Link href="/" className="font-medium text-brand underline">
           Back to ClassBrief
         </Link>
       </p>
@@ -97,7 +97,7 @@ export default function PrivacyPage() {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mt-8">
-      <h2 className="text-lg font-semibold text-slate-900">{title}</h2>
+      <h2 className="text-lg font-semibold text-ink">{title}</h2>
       <div className="mt-2">{children}</div>
     </section>
   );
