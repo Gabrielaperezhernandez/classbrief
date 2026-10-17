@@ -42,3 +42,29 @@ drop policy if exists "Users can delete their own topics" on public.topics;
 create policy "Users can delete their own topics"
   on public.topics for delete to authenticated
   using ((select auth.uid()) = user_id);
+
+-- ---------------------------------------------------------------------------
+-- Day 3: AI usage log, used to rate-limit AI summaries (they cost money).
+-- One row per summary request. Users can only see and add their own rows,
+-- and cannot delete them (so they can't reset their own limit).
+create table if not exists public.ai_usage (
+  id bigint generated always as identity primary key,
+  user_id uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  created_at timestamptz not null default now()
+);
+
+create index if not exists ai_usage_user_time_idx on public.ai_usage (user_id, created_at);
+
+alter table public.ai_usage enable row level security;
+revoke all on public.ai_usage from anon;
+grant select, insert on public.ai_usage to authenticated;
+
+drop policy if exists "Users can read their own AI usage" on public.ai_usage;
+create policy "Users can read their own AI usage"
+  on public.ai_usage for select to authenticated
+  using ((select auth.uid()) = user_id);
+
+drop policy if exists "Users can log their own AI usage" on public.ai_usage;
+create policy "Users can log their own AI usage"
+  on public.ai_usage for insert to authenticated
+  with check ((select auth.uid()) = user_id);
