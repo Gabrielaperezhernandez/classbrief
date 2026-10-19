@@ -11,6 +11,9 @@ const OUTLETS = [
   "Der Spiegel",
   "BBC News",
   "El País",
+  "European Commission",
+  "Council of the EU",
+  "World Health Organization",
 ];
 
 const STEPS = [
@@ -91,7 +94,7 @@ export default function Home() {
       <section aria-label="News sources" className="border-y border-line bg-card">
         <div className="mx-auto max-w-5xl px-4 py-6 text-center">
           <p className="text-xs font-semibold uppercase tracking-wider text-muted">
-            Headlines from 13 trusted sources, including
+            Headlines from 9 newspapers and 3 official sources
           </p>
           <ul className="mt-3 flex flex-wrap justify-center gap-x-5 gap-y-1 font-serif text-lg text-ink">
             {OUTLETS.map((o) => (
