@@ -52,6 +52,7 @@ Professors often refer to recent news in class (e.g. air-quality regulation in a
 - **Who it's for:** IE students in policy, business and law courses where professors expect them to follow the news.
 - **Main feature (the contract's core item):** on `/app` ("What topics are you interested in?", where students land right after sign-up) the student types a topic their class covers and saves it.
 - **My news (`/news`):** for each topic, recent stories grouped across newspapers (no AI: relevance-scored search over each paper's section feeds + Guardian full-text search, then grouped by shared distinctive words; details in SOURCES.md), showing "Covered by N newspapers" and each outlet's headline, snippet and link, with a "Subscription" label for paywalled papers. Code: `src/lib/news/` (`index.ts` fetches, `stories.ts` groups, `sources.ts` lists the 12 sources: 9 newspapers + European Commission, Council of the EU, WHO).
+- **Return visits:** `news_visits` table (RLS) records when a user opens My news (max one row per 30 min); My news marks stories "New since your last visit" and shows a welcome-back count.
 - **Data: private.** Each user only sees their own topics.
 - **Later, only if the core is solid:** professor course feeds with join codes, story grouping across outlets, chatbot per story, paid publisher sources.
 

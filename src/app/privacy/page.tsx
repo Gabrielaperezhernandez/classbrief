@@ -9,7 +9,7 @@ export default function PrivacyPage() {
   return (
     <div className="mx-auto max-w-2xl px-4 py-10 text-ink">
       <h1 className="font-serif text-3xl font-semibold tracking-tight text-ink">Privacy</h1>
-      <p className="mt-2 text-sm text-muted">Last updated: 17 October 2026</p>
+      <p className="mt-2 text-sm text-muted">Last updated: 20 October 2026</p>
 
       <p className="mt-6">
         ClassBrief is an independent student project built for an EdTech course at IE University. It
@@ -26,6 +26,10 @@ export default function PrivacyPage() {
             <strong>The topics you save</strong> (for example &ldquo;EU air quality rules&rdquo;) and when you
             saved them.
           </li>
+          <li>
+            <strong>When you open &ldquo;My news&rdquo;</strong> (date and time only), so we can show which
+            stories are new since your last visit and see whether students come back.
+          </li>
         </ul>
         <p className="mt-2">
           We don&apos;t ask for your name, student ID, grades or any other personal details, and we
@@ -35,7 +39,8 @@ export default function PrivacyPage() {
 
       <Section title="Why we use it">
         <p>
-          Only to run the service: to log you in and to show you news for the topics you saved. We
+          Only to run the service: to log you in, to show you news for the topics you saved and what
+          is new since your last visit, and to count (without names) how many students come back. We
           never sell your data or use it for marketing.
         </p>
       </Section>

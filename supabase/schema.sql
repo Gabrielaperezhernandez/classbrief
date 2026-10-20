@@ -68,3 +68,29 @@ drop policy if exists "Users can log their own AI usage" on public.ai_usage;
 create policy "Users can log their own AI usage"
   on public.ai_usage for insert to authenticated
   with check ((select auth.uid()) = user_id);
+
+-- ---------------------------------------------------------------------------
+-- News page visits: when each user opened "My news" (at most one row per 30 minutes).
+-- Used to show "New since your last visit" and to count returning users.
+-- Users can only see and add their own rows.
+create table if not exists public.news_visits (
+  id bigint generated always as identity primary key,
+  user_id uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  visited_at timestamptz not null default now()
+);
+
+create index if not exists news_visits_user_time_idx on public.news_visits (user_id, visited_at desc);
+
+alter table public.news_visits enable row level security;
+revoke all on public.news_visits from anon;
+grant select, insert on public.news_visits to authenticated;
+
+drop policy if exists "Users can read their own visits" on public.news_visits;
+create policy "Users can read their own visits"
+  on public.news_visits for select to authenticated
+  using ((select auth.uid()) = user_id);
+
+drop policy if exists "Users can log their own visits" on public.news_visits;
+create policy "Users can log their own visits"
+  on public.news_visits for insert to authenticated
+  with check ((select auth.uid()) = user_id);

@@ -8,10 +8,30 @@ import { createClient } from "@/lib/supabase/client";
 
 type Mode = "signup" | "login";
 
+// Turns Supabase sign-up errors into clear, friendly messages.
+function signupMessage(code: string | undefined, message: string): string {
+  switch (code) {
+    case "user_already_exists":
+    case "email_exists":
+      return "An account with this email already exists.";
+    case "weak_password":
+      return "That password is too weak. Use at least 6 characters.";
+    case "email_address_invalid":
+    case "validation_failed":
+      return "Please enter a valid email address.";
+    case "over_request_rate_limit":
+    case "over_email_send_rate_limit":
+      return "Too many attempts. Please wait a minute and try again.";
+    default:
+      return message || "Something went wrong. Please try again.";
+  }
+}
+
 export default function AuthForm({ mode }: { mode: Mode }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [accountExists, setAccountExists] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const router = useRouter();
@@ -20,13 +40,26 @@ export default function AuthForm({ mode }: { mode: Mode }) {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
+    setAccountExists(false);
+
+    // Check the fields here too (not only with the browser's built-in checks).
+    if (!email.trim() || !password) {
+      setError("Please enter your email and password.");
+      return;
+    }
+    if (isSignup && password.length < 6) {
+      setError("Your password needs at least 6 characters.");
+      return;
+    }
+
     setLoading(true);
     const supabase = createClient();
 
     if (isSignup) {
-      const { data, error } = await supabase.auth.signUp({ email, password });
+      const { data, error } = await supabase.auth.signUp({ email: email.trim(), password });
       if (error) {
-        setError(error.message);
+        setError(signupMessage(error.code, error.message));
+        setAccountExists(error.code === "user_already_exists" || error.code === "email_exists");
         setLoading(false);
         return;
       }
@@ -38,7 +71,7 @@ export default function AuthForm({ mode }: { mode: Mode }) {
       }
     } else {
       // signInWithPassword really checks the password: a wrong one returns an error.
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
       if (error) {
         setError("Wrong email or password. Please try again.");
         setLoading(false);
@@ -63,7 +96,7 @@ export default function AuthForm({ mode }: { mode: Mode }) {
           : "Welcome back. Your news is waiting."}
       </p>
 
-      <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+      <form onSubmit={handleSubmit} noValidate className="mt-6 space-y-4">
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-ink">
             Email
@@ -100,6 +133,14 @@ export default function AuthForm({ mode }: { mode: Mode }) {
         {error && (
           <p role="alert" className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-800">
             {error}
+            {accountExists && (
+              <>
+                {" "}
+                <Link href="/login" className="font-semibold underline underline-offset-2">
+                  Log in instead
+                </Link>
+              </>
+            )}
           </p>
         )}
 

@@ -9,6 +9,26 @@ import { getStoriesForTopic, type Story } from "@/lib/news/stories";
 
 export const metadata = { title: "My news · ClassBrief" };
 
+const VISIT_GAP_MS = 30 * 60 * 1000; // reloads within 30 minutes count as the same visit
+
+// Records this visit to My news and returns when the previous visit was (or null on a first
+// visit). Used for "New since your last visit". Row Level Security keeps visits private.
+async function recordVisit(supabase: Awaited<ReturnType<typeof createClient>>): Promise<string | null> {
+  const { data: visits } = await supabase
+    .from("news_visits")
+    .select("visited_at")
+    .order("visited_at", { ascending: false })
+    .limit(2);
+  const [latest, before] = visits ?? [];
+
+  // Reloaded within 30 minutes: same visit, so compare with the visit before it.
+  if (latest && Date.now() - Date.parse(latest.visited_at) < VISIT_GAP_MS) {
+    return before?.visited_at ?? null;
+  }
+  await supabase.from("news_visits").insert({});
+  return latest?.visited_at ?? null;
+}
+
 export default async function NewsPage() {
   const supabase = await createClient();
   const {
@@ -36,6 +56,9 @@ export default async function NewsPage() {
     );
   }
 
+  const lastVisit = await recordVisit(supabase).catch(() => null);
+  const isNew = (story: Story) => Boolean(lastVisit) && story.latest > lastVisit!;
+
   // One topic failing never breaks the page: it just shows "no recent news".
   const sections = await Promise.all(
     topics.map(async (t) => ({
@@ -60,6 +83,19 @@ export default async function NewsPage() {
         </div>
       </header>
 
+      {/* Welcome-back line: what changed since the last visit. */}
+      <p className="mt-4 rounded-lg bg-brand-soft px-4 py-3 text-sm text-brand" role="status">
+        {lastVisit
+          ? (() => {
+              const count = sections.reduce((n, s) => n + s.stories.filter(isNew).length, 0);
+              const since = formatDate(lastVisit);
+              return count > 0
+                ? `Welcome back! ${count} new ${count === 1 ? "story" : "stories"} since your last visit (${since}).`
+                : `Welcome back! No new stories since your last visit (${since}). Check again tomorrow.`;
+            })()
+          : "Welcome! This page updates every hour. Come back before class to see what's new."}
+      </p>
+
       {sections.map(({ topic, stories }) => (
         <section key={topic.id} aria-labelledby={`topic-${topic.id}`} className="mt-10">
           <h2
@@ -76,7 +112,7 @@ export default async function NewsPage() {
           ) : (
             <div className="mt-4 space-y-4">
               {stories.map((story) => (
-                <StoryCard key={story.articles[0].url} story={story} />
+                <StoryCard key={story.articles[0].url} story={story} isNew={isNew(story)} />
               ))}
             </div>
           )}
@@ -92,7 +128,7 @@ export default async function NewsPage() {
   );
 }
 
-function StoryCard({ story }: { story: Story }) {
+function StoryCard({ story, isNew }: { story: Story; isNew: boolean }) {
   const [lead, ...others] = story.articles;
   const count = story.sources.length;
 
@@ -104,6 +140,11 @@ function StoryCard({ story }: { story: Story }) {
         >
           {count > 1 ? `Covered by ${count} newspapers` : "Covered by 1 newspaper"}
         </span>
+        {isNew && (
+          <span className="rounded-full bg-accent px-2.5 py-1 font-semibold text-white">
+            New since your last visit
+          </span>
+        )}
         <span className="text-muted">{formatDate(story.latest)}</span>
       </div>
 

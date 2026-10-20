@@ -26,10 +26,11 @@ Each user only sees their own topics (Row Level Security). Only the Supabase URL
 1. **`/`** — landing page: who it's for, what you get, one "Sign up free" button.
 2. **`/signup`** — email + password only. No email confirmation: you land straight on `/app`.
 3. **`/app`** — "What topics are you interested in?": type a topic (e.g. "EU climate policy") and click **Add topic**. Topics are saved in Supabase, linked to your account.
-4. **`/news`** — My news: for each topic, recent stories grouped across newspapers ("Covered by 3 newspapers"), each with its headline, snippet and a link to the original.
+4. **`/news`** — My news: for each topic, recent stories grouped across newspapers ("Covered by 3 newspapers"), each with its headline, snippet and a link to the original. Stories published since your previous visit are marked **"New since your last visit"**, with a welcome-back line counting them.
 
 ## Data and security
 
+- Visits to My news are stored in `public.news_visits` (user id + time, at most one per 30 minutes), also under Row Level Security; they power "New since your last visit" and let us count returning users.
 - Topics live in the Supabase table `public.topics` (see [`supabase/schema.sql`](supabase/schema.sql)), never in the browser's storage.
 - **Row Level Security** is on. Policies use `auth.uid() = user_id` for read, insert, update and delete, so each user only sees and changes their own topics. Logged-out visitors (the `anon` role) have no access at all.
 - `/app` and `/news` redirect logged-out visitors to `/login` ([`src/proxy.ts`](src/proxy.ts)).
@@ -56,4 +57,6 @@ Each user only sees their own topics (Row Level Security). Only the Supabase URL
 | Log in with the right password: the item is still there | ✅ |
 | A second account does not see the first account's items | ✅ |
 | Reading the `topics` table without logging in (direct API call with the public key) | ✅ refused: `permission denied for table topics` |
+| Sign up with an email that already exists: "An account with this email already exists. Log in instead" | ✅ |
+| Sign up with an empty form or a password under 6 characters: clear message, nothing is sent | ✅ |
 | Phone width (375 px): no sideways scrolling on `/`, `/signup`, `/login`, `/app`, `/news`, `/privacy` | ✅ |
