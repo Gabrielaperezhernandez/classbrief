@@ -38,14 +38,15 @@ export default function Home() {
       <section className="mx-auto grid max-w-5xl items-center gap-10 px-4 pb-12 pt-12 sm:pt-20 lg:grid-cols-[1.1fr_1fr]">
         <div>
           <p className="text-sm font-semibold uppercase tracking-wider text-accent">
-            For IE students in policy, business and law
+            A news app for IE University students in policy, business and law
           </p>
           <h1 className="mt-4 font-serif text-4xl font-semibold leading-[1.1] tracking-tight text-ink sm:text-6xl">
             Know the news your professors will talk about
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted">
-            Pick the topics your classes cover. ClassBrief gives you one news page where each story is
-            grouped across the FT, The Economist, the BBC and more, instead of checking ten sites.
+            A news page built from your class topics. Pick what your courses cover, and ClassBrief
+            shows each story grouped across the FT, The Economist, the BBC and more, instead of checking
+            ten sites.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <Link
@@ -54,17 +55,20 @@ export default function Home() {
             >
               Sign up free
             </Link>
-            <p className="text-sm text-muted">
-              Already have an account?{" "}
-              <Link href="/login" className="font-medium text-brand underline underline-offset-2">
-                Log in
-              </Link>
-            </p>
+            <a href="#example" className="text-sm font-medium text-brand underline underline-offset-2">
+              See an example ↓
+            </a>
           </div>
+          <p className="mt-4 text-sm text-muted">
+            Already have an account?{" "}
+            <Link href="/login" className="font-medium text-brand underline underline-offset-2">
+              Log in
+            </Link>
+          </p>
         </div>
 
         {/* Preview of a story card, so visitors see what they get. */}
-        <figure aria-label="Example of a story on your news page">
+        <figure id="example" aria-label="Example of a story on your news page" className="scroll-mt-20">
           <div className="rounded-2xl border border-line bg-card p-5 shadow-[0_20px_50px_-20px_rgba(27,51,88,0.35)]">
             <p className="text-xs font-semibold uppercase tracking-wider text-muted">Example · EU climate policy</p>
             <p className="mt-2 font-serif text-xl font-semibold leading-snug text-ink">
